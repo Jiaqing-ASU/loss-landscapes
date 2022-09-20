@@ -7,7 +7,7 @@ import typing
 import torch.nn
 import numpy as np
 from loss_landscapes.model_interface.model_wrapper import ModelWrapper, wrap_model
-from loss_landscapes.model_interface.model_parameters import rand_u_like, orthogonal_to
+from loss_landscapes.model_interface.model_parameters import orthogonal_to_plane, rand_u_like, orthogonal_to
 from loss_landscapes.metrics.metric import Metric
 
 
@@ -323,5 +323,76 @@ def random_plane(model: typing.Union[torch.nn.Module, ModelWrapper], metric: Met
 
     return np.array(data_matrix)
 
+# noinspection DuplicatedCode
+def random_space(model: typing.Union[torch.nn.Module, ModelWrapper], metric: Metric, distance=1, steps=20,
+                 normalization='filter', deepcopy_model=False) -> np.ndarray:
+    model_start_wrapper = wrap_model(copy.deepcopy(model) if deepcopy_model else model)
 
-# todo add hypersphere function
+    start_point = model_start_wrapper.get_module_parameters()
+    dir_one = rand_u_like(start_point)
+    dir_two = orthogonal_to(dir_one)
+    dir_three = orthogonal_to_plane(dir_one, dir_two)
+
+    if normalization == 'model':
+        dir_one.model_normalize_(start_point)
+        dir_two.model_normalize_(start_point)
+        dir_three.model_normalize_(start_point)
+    elif normalization == 'layer':
+        dir_one.layer_normalize_(start_point)
+        dir_two.layer_normalize_(start_point)
+        dir_three.layer_normalize_(start_point)
+    elif normalization == 'filter':
+        dir_one.filter_normalize_(start_point)
+        dir_two.filter_normalize_(start_point)
+        dir_three.filter_normalize_(start_point)
+    elif normalization is None:
+        pass
+    else:
+        raise AttributeError('Unsupported normalization argument. Supported values are model, layer, and filter')
+
+    # scale to match steps and total distance
+    dir_one.mul_(((start_point.model_norm() * distance) / steps) / dir_one.model_norm())
+    dir_two.mul_(((start_point.model_norm() * distance) / steps) / dir_two.model_norm())
+    dir_three.mul_(((start_point.model_norm() * distance) / steps) / dir_three.model_norm())
+    # Move start point so that original start params will be in the center of the plot
+    dir_one.mul_(steps / 2)
+    dir_two.mul_(steps / 2)
+    dir_three.mul_(steps / 2)
+    start_point.sub_(dir_one)
+    start_point.sub_(dir_two)
+    start_point.sub_(dir_three)
+    dir_one.truediv_(steps / 2)
+    dir_two.truediv_(steps / 2)
+    dir_three.truediv_(steps / 2)
+
+    data_matrix = []
+    # evaluate loss in grid of (steps * steps) points, where each column signifies one step
+    # along dir_one and each row signifies one step along dir_two. The implementation is again
+    # a little convoluted to avoid constructive operations. Fundamentally we generate the matrix
+    # [[start_point + (dir_one * i) + (dir_two * j) for j in range(steps)] for i in range(steps].
+
+    for i in range(steps):
+        data_first_dim= []
+
+        for j in range(steps):
+            data_second_dim = []
+
+            for k in range(steps):
+                # for every other column, reverse the order in which the column is generated
+                # so you can easily use in-place operations to move along dir_two
+                if i % 2 == 0:
+                    start_point.add_(dir_three)
+                    data_second_dim.append(metric(model_start_wrapper))
+                else:
+                    start_point.sub_(dir_three)
+                    data_second_dim.insert(0, metric(model_start_wrapper))
+            
+            data_first_dim.append(data_second_dim)
+            start_point.add_(dir_two)
+        
+        data_matrix.append(data_second_dim)
+        start_point.add_(dir_one)
+
+    return np.array(data_matrix)
+
+# todo add hypersphere functionality

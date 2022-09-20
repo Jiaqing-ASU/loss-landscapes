@@ -318,7 +318,20 @@ def orthogonal_to(vector: ModelParameters) -> ModelParameters:
     new_vector = new_vector - new_vector.dot(vector) * vector / math.pow(vector.model_norm(2), 2)
     return new_vector
 
+def orthogonal_to_plane(first_vector: ModelParameters, second_vector: ModelParameters) -> ModelParameters:
+    """
+    Create a new ModelParameters object of size and shape compatible with the given
+    two vectors, such that the three vectors are very nearly orthogonal.
+    :param first_vector: original first vector
+    :param second_vector: original second vector
+    :return: new vector that is very nearly orthogonal to two original vectors
+    """
 
+    temp_vector = first_vector + second_vector
+    new_vector = rand_u_like(temp_vector)
+    new_vector = new_vector - new_vector.dot(temp_vector) * temp_vector / math.pow(temp_vector.model_norm(2), 2)
+    return new_vector
+    
 def add(vector_a: ModelParameters, vector_b: ModelParameters) -> ModelParameters:
     return vector_a + vector_b
 
