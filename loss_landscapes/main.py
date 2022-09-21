@@ -366,11 +366,26 @@ def random_space(model: typing.Union[torch.nn.Module, ModelWrapper], metric: Met
     dir_three.truediv_(steps / 2)
 
     data_matrix = []
-    # evaluate loss in grid of (steps * steps) points, where each column signifies one step
-    # along dir_one and each row signifies one step along dir_two. The implementation is again
-    # a little convoluted to avoid constructive operations. Fundamentally we generate the matrix
-    # [[start_point + (dir_one * i) + (dir_two * j) for j in range(steps)] for i in range(steps].
 
+    for i in range(steps):
+        data_first_dim = []
+        for j in range(steps):
+            data_second_dim = []
+            for k in range(steps):
+                start_point.add_(dir_three)
+                data_second_dim.append(metric(model_start_wrapper))
+            for k in range(steps):
+                start_point.sub_(dir_three)
+            data_first_dim.append(data_second_dim)
+            start_point.add_(dir_two)
+        for j in range(steps):
+            start_point.sub_(dir_two)
+        data_matrix.append(data_first_dim)
+        start_point.add_(dir_one)
+        
+    return np.array(data_matrix)
+
+"""
     for i in range(steps):
         data_first_dim= []
 
@@ -392,7 +407,5 @@ def random_space(model: typing.Union[torch.nn.Module, ModelWrapper], metric: Met
         
         data_matrix.append(data_second_dim)
         start_point.add_(dir_one)
-
-    return np.array(data_matrix)
-
+"""
 # todo add hypersphere functionality

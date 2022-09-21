@@ -1,8 +1,9 @@
 # libraries
+from cgitb import lookup
 import copy
 import matplotlib
 import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
+from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import torch
 import torch.nn
@@ -83,15 +84,37 @@ loss_data = loss_landscapes.linear_interpolation(model_initial, model_final, met
 
 # compute loss landscape 3d data
 loss_data_fin = loss_landscapes.random_space(model_final, metric, 10, STEPS, normalization='filter', deepcopy_model=True)
+print('loss_data_fin shape:', loss_data_fin.shape)
 
-# plot 3D loss contour
+# reshape loss data
+loss_data_fin.reshape(-1)
+
+# prepare data for plotting
+X_list = []
+Y_list = []
+Z_list = []
+
+for i in range(0, STEPS):
+    for j in range(0, STEPS):
+        for k in range(0, STEPS):
+            X_list.append(i)
+            Y_list.append(j)
+            Z_list.append(k)
+
+X = np.array(X_list)
+Y = np.array(Y_list)
+Z = np.array(Z_list)
+ 
+# plot loss landscape 3d
 fig = plt.figure()
-ax = fig.gca(projection='3d')
-X = np.array([[j for j in range(STEPS)] for i in range(STEPS)])
-Y = np.array([[i for _ in range(STEPS)] for i in range(STEPS)])
+ax = Axes3D(fig)
+ax.scatter(X, Y, Z, c=loss_data_fin, cmap='rainbow')
 
-# Plot contour curves
-cset = ax.contour(X, Y, loss_data_fin, cmap=cm.coolwarm)
-ax.clabel(cset, fontsize=9, inline=1)
+# add plot labels
+ax.set_zlabel('Z', fontdict={'size': 15, 'color': 'black'})
+ax.set_ylabel('Y', fontdict={'size': 15, 'color': 'black'})
+ax.set_xlabel('X', fontdict={'size': 15, 'color': 'black'})
+
+# save plot to file and show
+plt.savefig('loss_mnist_3d.jpg')
 plt.show()
-plt.savefig('loss_mnist_3d.png')

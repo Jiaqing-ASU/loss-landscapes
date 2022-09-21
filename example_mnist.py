@@ -10,6 +10,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torchvision.datasets as datasets
 from tqdm import tqdm
+from mpl_toolkits.mplot3d import Axes3D
 
 matplotlib.rcParams['figure.figsize'] = [18, 12]
 
@@ -81,19 +82,59 @@ metric = loss_landscapes.metrics.Loss(criterion, x, y)
 # compute loss data
 loss_data = loss_landscapes.linear_interpolation(model_initial, model_final, metric, STEPS, deepcopy_model=True)
 
-# plot loss data
+# plot loss data in 1D
 plt.plot([1/STEPS * i for i in range(STEPS)], loss_data)
 plt.title('Linear Interpolation of Loss')
 plt.xlabel('Interpolation Coefficient')
 plt.ylabel('Loss')
 axes = plt.gca()
-plt.show()
+
+# save plot to file and show
 plt.savefig('loss_mnist_1d.png')
+plt.show()
 
 loss_data_fin = loss_landscapes.random_plane(model_final, metric, 10, STEPS, normalization='filter', deepcopy_model=True)
 
-# plot loss contour
+# plot loss contour in 2D
 plt.contour(loss_data_fin, levels=50)
 plt.title('Loss Contours around Trained Model')
-plt.show()
+
+# save plot to file and show
 plt.savefig('loss_mnist_2d.png')
+plt.show()
+
+# compute loss landscape 3D data
+loss_data_fin_3d = loss_landscapes.random_space(model_final, metric, 10, STEPS, normalization='filter', deepcopy_model=True)
+
+# reshape loss data for 3D plot
+loss_data_fin_3d.reshape(-1)
+
+# prepare data for plotting
+X_list = []
+Y_list = []
+Z_list = []
+
+for i in range(0, STEPS):
+    for j in range(0, STEPS):
+        for k in range(0, STEPS):
+            X_list.append(i)
+            Y_list.append(j)
+            Z_list.append(k)
+
+X = np.array(X_list)
+Y = np.array(Y_list)
+Z = np.array(Z_list)
+ 
+# plot loss landscape 3d
+fig = plt.figure()
+ax = Axes3D(fig)
+ax.scatter(X, Y, Z, c=loss_data_fin_3d, cmap='rainbow')
+
+# add plot labels
+ax.set_zlabel('Z', fontdict={'size': 15, 'color': 'black'})
+ax.set_ylabel('Y', fontdict={'size': 15, 'color': 'black'})
+ax.set_xlabel('X', fontdict={'size': 15, 'color': 'black'})
+
+# save plot to file and show
+plt.savefig('loss_mnist_3d.png')
+plt.show()
