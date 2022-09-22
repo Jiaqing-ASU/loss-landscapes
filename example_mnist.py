@@ -11,6 +11,7 @@ import torch.optim as optim
 import torchvision.datasets as datasets
 from tqdm import tqdm
 from mpl_toolkits.mplot3d import Axes3D
+from numpy import save
 
 matplotlib.rcParams['figure.figsize'] = [18, 12]
 
@@ -138,3 +139,9 @@ ax.set_xlabel('X', fontdict={'size': 15, 'color': 'black'})
 # save plot to file and show
 plt.savefig('loss_mnist_3d.png')
 plt.show()
+
+save('X.npy', X)
+save('Y.npy', Y)
+save('Z.npy', Z)
+save('loss_data_fin.npy', loss_data_fin)
+save('loss_data_fin_3d.npy', loss_data_fin_3d)
