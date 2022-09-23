@@ -65,8 +65,8 @@ if __name__ == '__main__':
     ax.plot_surface(X, Y, loss_data_fin, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
     
     cset = ax.contourf(X, Y, loss_data_fin, zdir='z', offset=1.5, cmap=cm.coolwarm)
-    cset = ax.contourf(X, Y, loss_data_fin, zdir='x', offset=40, cmap=cm.coolwarm)
-    cset = ax.contourf(X, Y, loss_data_fin, zdir='y', offset=0, cmap=cm.coolwarm)
+    #cset = ax.contourf(X, Y, loss_data_fin, zdir='x', offset=40, cmap=cm.coolwarm)
+    #cset = ax.contourf(X, Y, loss_data_fin, zdir='y', offset=0, cmap=cm.coolwarm)
     
     ax.set_xlabel('X')
     ax.set_xlim(0, 40)
