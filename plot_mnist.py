@@ -19,6 +19,12 @@ print(Y.shape)
 print(Z.shape)
 print(loss_data_fin.shape)
 print(loss_data_fin_3d.shape)
+print(loss_data_fin_3d)
+
+# print max and min
+loss_data_fin_3d.flatten()
+print('max loss fin', np.max(loss_data_fin_3d))
+print('min loss fin', np.min(loss_data_fin_3d))
 
 # plot loss landscape 3d
 fig = plt.figure()
