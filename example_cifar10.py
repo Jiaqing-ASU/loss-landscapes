@@ -115,5 +115,5 @@ if __name__ == '__main__':
     ax.set_xlabel('X', fontdict={'size': 15, 'color': 'black'})
 
     # save plot to file and show
-    plt.savefig('loss_mnist_3d.png')
+    plt.savefig('loss_cifar10_3d.png')
     plt.show()
