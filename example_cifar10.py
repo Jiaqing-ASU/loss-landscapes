@@ -64,7 +64,7 @@ if __name__ == '__main__':
     Y = np.array([[i for _ in range(STEPS)] for i in range(STEPS)])
     ax.plot_surface(X, Y, loss_data_fin, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
     
-    cset = ax.contourf(X, Y, loss_data_fin, zdir='z', offset=1.5, cmap=cm.coolwarm)
+    cset = ax.contourf(X, Y, loss_data_fin, zdir='z', offset=3, cmap=cm.coolwarm)
     #cset = ax.contourf(X, Y, loss_data_fin, zdir='x', offset=40, cmap=cm.coolwarm)
     #cset = ax.contourf(X, Y, loss_data_fin, zdir='y', offset=0, cmap=cm.coolwarm)
     
@@ -73,7 +73,7 @@ if __name__ == '__main__':
     ax.set_ylabel('Y')
     ax.set_ylim(0, 40)
     ax.set_zlabel('loss_data_fin')
-    ax.set_zlim(0, 1.5)
+    ax.set_zlim(0, 3)
     
     ax.set_title('Surface and Contour Plot of Loss Landscape')
     
