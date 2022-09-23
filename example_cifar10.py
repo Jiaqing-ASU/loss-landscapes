@@ -11,6 +11,7 @@ import torchvision.datasets as datasets
 from tqdm import tqdm
 from mpl_toolkits.mplot3d import Axes3D
 from numpy import save
+from matplotlib import cm
 
 import argparse
 import copy
