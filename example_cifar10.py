@@ -64,7 +64,7 @@ if __name__ == '__main__':
     Y = np.array([[i for _ in range(STEPS)] for i in range(STEPS)])
     ax.plot_surface(X, Y, loss_data_fin, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
     
-    cset = ax.contourf(X, Y, loss_data_fin, zdir='z', offset=5, cmap=cm.coolwarm)
+    cset = ax.contourf(X, Y, loss_data_fin, zdir='z', offset=20, cmap=cm.coolwarm)
     #cset = ax.contourf(X, Y, loss_data_fin, zdir='x', offset=40, cmap=cm.coolwarm)
     #cset = ax.contourf(X, Y, loss_data_fin, zdir='y', offset=0, cmap=cm.coolwarm)
     
@@ -73,10 +73,47 @@ if __name__ == '__main__':
     ax.set_ylabel('Y')
     ax.set_ylim(0, 40)
     ax.set_zlabel('loss_data_fin')
-    ax.set_zlim(-5, 5)
+    ax.set_zlim(-20, 20)
     
     ax.set_title('Surface and Contour Plot of Loss Landscape')
     
     # save plot to file and show
     plt.savefig('loss_cifar10_2d_plot.png')
+    plt.show()
+
+
+    # compute loss landscape 3D data
+    loss_data_fin_3d = loss_landscapes.random_space(model_final, metric, 10, STEPS, normalization='filter', deepcopy_model=True)
+
+    # reshape loss data for 3D plot
+    loss_data_fin_3d.reshape(-1)
+
+    # prepare data for plotting
+    X_list = []
+    Y_list = []
+    Z_list = []
+
+    for i in range(0, STEPS):
+        for j in range(0, STEPS):
+            for k in range(0, STEPS):
+                X_list.append(i)
+                Y_list.append(j)
+                Z_list.append(k)
+
+    X = np.array(X_list)
+    Y = np.array(Y_list)
+    Z = np.array(Z_list)
+ 
+    # plot loss landscape 3d
+    fig = plt.figure()
+    ax = Axes3D(fig)
+    ax.scatter(X, Y, Z, c=loss_data_fin_3d, cmap='rainbow')
+
+    # add plot labels
+    ax.set_zlabel('Z', fontdict={'size': 15, 'color': 'black'})
+    ax.set_ylabel('Y', fontdict={'size': 15, 'color': 'black'})
+    ax.set_xlabel('X', fontdict={'size': 15, 'color': 'black'})
+
+    # save plot to file and show
+    plt.savefig('loss_mnist_3d.png')
     plt.show()
