@@ -30,6 +30,10 @@ import model_loader
 import scheduler
 import mpi4pytorch as mpi
 
+# code from this library - import the lines module
+import loss_landscapes
+import loss_landscapes.metrics
+
 ###############################################################
 #                          MAIN
 ###############################################################
