@@ -34,3 +34,13 @@ for i in range(0, STEPS*STEPS*STEPS):
     point_list.append(point)
 
 np.savetxt("points.csv", point_list, delimiter=",")
+
+point_raw = []
+
+for i in range(0, STEPS*STEPS*STEPS):
+    point_raw.append(X[i])
+    point_raw.append(Y[i])
+    point_raw.append(Z[i])
+    point_raw.append(loss[i])
+
+np.savetxt("points.raw", point_raw, delimiter=" ")
