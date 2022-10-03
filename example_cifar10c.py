@@ -47,10 +47,11 @@ def get_model(num_classes):
 ###############################################################
 if __name__ == '__main__':
 
-    x,target = load_cifar10c(n_examples=32, data_dir='./files/')
+    corruptions = ['fog']
+    x,target = load_cifar10c(n_examples=32, corruptions=corruptions, severity=5)
     target = target.long()
     network = get_model(10).cpu()
-    network.load_state_dict(torch.load('resnet-model.pt'))
+    network.load_state_dict(torch.load('resnet-model.pt', map_location=torch.device('cpu')))
     
     network.eval()
     model_final = copy.deepcopy(network)

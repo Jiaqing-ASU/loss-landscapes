@@ -8,9 +8,9 @@ import matplotlib.animation as animation
 STEPS = 40
 
 # load array
-loss_data_fin = load('loss_data_3d_cifar10.npy')
+loss_data_fin = load('loss_data_fin_cifar10.npy')
 loss_data_fin_3d = load('loss_data_fin_3d_cifar10.npy')
-loss_data_fin_c = load('loss_data_3d_cifar10c.npy')
+loss_data_fin_c = load('loss_data_fin_cifar10c.npy')
 loss_data_fin_3d_c = load('loss_data_fin_3d_cifar10c.npy')
 
 # print the array
@@ -66,8 +66,8 @@ for i in range(STEPS):
     for j in range(STEPS):
             num_list_2d.append(loss_data_fin[i][j])
 plt.bar(range(len(num_list_2d)), num_list_2d)
-plt.yticks(np.arange(2.0, 2.5, step=0.01))
-plt.ylim(ymin=2.0, ymax=2.5)
+#plt.yticks(np.arange(2.0, 2.5, step=0.01))
+#plt.ylim(ymin=2.0, ymax=2.5)
 plt.savefig('loss_cifar10_2d_values.png')
 plt.show()
 
@@ -77,7 +77,7 @@ for i in range(STEPS):
     for j in range(STEPS):
             num_list_2d_c.append(loss_data_fin_c[i][j])
 plt.bar(range(len(num_list_2d_c)), num_list_2d_c)
-plt.yticks(np.arange(2.0, 2.5, step=0.01))
-plt.ylim(ymin=2.0, ymax=2.5)
+#plt.yticks(np.arange(2.0, 2.5, step=0.01))
+#plt.ylim(ymin=2.0, ymax=2.5)
 plt.savefig('loss_cifar10c_2d_values.png')
 plt.show()
