@@ -30,6 +30,7 @@ import net_plotter
 import model_loader
 import scheduler
 import mpi4pytorch as mpi
+from robustbench.data import load_cifar10c
 
 # code from this library - import the lines module
 import loss_landscapes
@@ -51,8 +52,8 @@ if __name__ == '__main__':
     model_final = copy.deepcopy(net)
     STEPS = 40
     
-    train_loader, test_loader = dataloader.load_dataset('cifar10','cifar10/data', 32, 1, False,1, 0,'','')
-    x,target = iter(train_loader).__next__()
+    x,target = load_cifar10c(n_examples=32, data_dir='./files/')
+    target = target.long()
     target = target.unsqueeze(1)
     target_hot = torch.FloatTensor(torch.zeros((target.size()[0],10)).scatter(1,target,1.0))
     metric = loss_landscapes.metrics.Loss(torch.nn.CrossEntropyLoss(),x,target_hot)
@@ -78,7 +79,7 @@ if __name__ == '__main__':
     ax.set_title('Surface and Contour Plot of Loss Landscape')
     
     # save plot to file and show
-    plt.savefig('loss_cifar10_2d_plot.png')
+    plt.savefig('loss_cifar10c_2d_plot.png')
     plt.show()
 
     # compute loss landscape 3D data
@@ -114,8 +115,8 @@ if __name__ == '__main__':
     ax.set_xlabel('X', fontdict={'size': 15, 'color': 'black'})
 
     # save plot to file and show
-    plt.savefig('loss_cifar10_3d.png')
+    plt.savefig('loss_cifar10c_3d.png')
     plt.show()
     
-    save('loss_data_fin_cifar10.npy', loss_data_fin)
-    save('loss_data_fin_3d_cifar10.npy', loss_data_fin_3d)
+    save('loss_data_fin_cifar10c.npy', loss_data_fin)
+    save('loss_data_fin_3d_cifar10c.npy', loss_data_fin_3d)

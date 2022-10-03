@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from matplotlib import cm
+import matplotlib.animation as animation
 
 STEPS = 40
 
@@ -19,10 +20,12 @@ print(Y.shape)
 print(Z.shape)
 print(loss_data_fin.shape)
 print(loss_data_fin_3d.shape)
-print(loss_data_fin_3d)
 
 # print max and min
 loss_data_fin_3d.flatten()
+print(loss_data_fin_3d.shape)
+print(loss_data_fin_3d[0][0][0])
+
 print('max loss fin', np.max(loss_data_fin_3d))
 print('min loss fin', np.min(loss_data_fin_3d))
 
@@ -38,6 +41,22 @@ ax.set_xlabel('X', fontdict={'size': 15, 'color': 'black'})
 
 # save plot to file and show
 plt.savefig('loss_mnist_3d_plot.png')
+plt.show()
+
+# plot loss values of 3d loss landscape
+num_list = []
+for i in range(STEPS):
+    for j in range(STEPS):
+        for k in range(STEPS):
+            num_list.append(loss_data_fin_3d[i][j][k])
+plt.bar(range(len(num_list)), num_list)
+plt.yticks(np.arange(2.0, 2.5, step=0.01))
+plt.ylim(ymin=2.0, ymax=2.5)
+plt.savefig('loss_mnist_3d_values.png')
+plt.show()
+
+plt.plot(range(len(num_list)), num_list,'o-',color = 'r',label="loss")
+plt.savefig('loss_mnist_3d_values_line.png')
 plt.show()
 
 # plot loss contour in 2D
@@ -62,4 +81,19 @@ ax.set_title('Surface and Contour Plot of Loss Landscape')
 
 # save plot to file and show
 plt.savefig('loss_mnist_2d_plot.png')
+plt.show()
+
+loss_data_fin.flatten()
+print('max loss fin', np.max(loss_data_fin))
+print('min loss fin', np.min(loss_data_fin))
+
+# plot loss values of 2d loss landscape
+num_list_2d = []
+for i in range(STEPS):
+    for j in range(STEPS):
+            num_list_2d.append(loss_data_fin[i][j])
+plt.bar(range(len(num_list_2d)), num_list_2d)
+plt.yticks(np.arange(2.0, 2.5, step=0.01))
+plt.ylim(ymin=2.0, ymax=2.5)
+plt.savefig('loss_mnist_2d_values.png')
 plt.show()
