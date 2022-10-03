@@ -36,28 +36,28 @@ from robustbench.data import load_cifar10c
 import loss_landscapes
 import loss_landscapes.metrics
 
+def get_model(num_classes):
+    model = None
+    model = torchvision.models.resnet50(pretrained = False)
+    model.fc = nn.Linear(2048, num_classes)
+    return model
+
 ###############################################################
 #                          MAIN
 ###############################################################
 if __name__ == '__main__':
-    
-    net = torchvision.models.resnet50(pretrained = False)
-    net = net.cpu()
-    net.fc = nn.Linear(2048, 10)
-    net.load_state_dict(torch.load("resnet-model.pt",map_location=torch.device('cpu')))
-    
-    w = net_plotter.get_weights(net) # initial parameters
-    s = copy.deepcopy(net.state_dict()) # deepcopy since state_dict are references
-    net.eval()
-    model_final = copy.deepcopy(net)
-    STEPS = 40
-    
+
     x,target = load_cifar10c(n_examples=32, data_dir='./files/')
     target = target.long()
-    target = target.unsqueeze(1)
-    target_hot = torch.FloatTensor(torch.zeros((target.size()[0],10)).scatter(1,target,1.0))
-    metric = loss_landscapes.metrics.Loss(torch.nn.CrossEntropyLoss(),x,target_hot)
-    loss_data_fin = loss_landscapes.random_plane(net,metric,10,STEPS,normalization='filter',deepcopy_model=True)
+    network = get_model(10).cpu()
+    network.load_state_dict(torch.load('resnet-model.pt'))
+    
+    network.eval()
+    model_final = copy.deepcopy(network)
+    STEPS = 40
+    loss_fn = nn.CrossEntropyLoss()
+    metric = loss_landscapes.metrics.Loss(loss_fn,x,target)
+    loss_data_fin = loss_landscapes.random_plane(model_final,metric,10,STEPS,normalization='filter',deepcopy_model=True)
 
     fig = plt.figure()
     ax = plt.axes(projection='3d')
