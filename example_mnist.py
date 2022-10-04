@@ -61,7 +61,7 @@ def train(model, optimizer, criterion, train_loader, epochs):
     model.eval()
 
 # download MNIST and setup data loaders
-mnist_train = datasets.MNIST(root='../data', train=True, download=True, transform=Flatten())
+mnist_train = datasets.MNIST(root='mnist_data', train=True, download=True, transform=Flatten())
 train_loader = torch.utils.data.DataLoader(mnist_train, batch_size=BATCH_SIZE, shuffle=False)
 
 # define model
@@ -91,7 +91,7 @@ plt.ylabel('Loss')
 axes = plt.gca()
 
 # save plot to file and show
-plt.savefig('loss_mnist_1d.png')
+plt.savefig('mnist_results/loss_mnist_1d.png')
 plt.show()
 
 loss_data_fin = loss_landscapes.random_plane(model_final, metric, 10, STEPS, normalization='filter', deepcopy_model=True)
@@ -101,7 +101,7 @@ plt.contour(loss_data_fin, levels=50)
 plt.title('Loss Contours around Trained Model')
 
 # save plot to file and show
-plt.savefig('loss_mnist_2d.png')
+plt.savefig('mnist_results/loss_mnist_2d.png')
 plt.show()
 
 # compute loss landscape 3D data
@@ -137,11 +137,11 @@ ax.set_ylabel('Y', fontdict={'size': 15, 'color': 'black'})
 ax.set_xlabel('X', fontdict={'size': 15, 'color': 'black'})
 
 # save plot to file and show
-plt.savefig('loss_mnist_3d.png')
+plt.savefig('mnist_results/loss_mnist_3d.png')
 plt.show()
 
-save('X.npy', X)
-save('Y.npy', Y)
-save('Z.npy', Z)
-save('loss_data_fin.npy', loss_data_fin)
-save('loss_data_fin_3d.npy', loss_data_fin_3d)
+save('mnist_results/X.npy', X)
+save('mnist_results/Y.npy', Y)
+save('mnist_results/Z.npy', Z)
+save('mnist_results/loss_data_fin_mnist.npy', loss_data_fin)
+save('mnist_results/loss_data_fin_3d_mnist.npy', loss_data_fin_3d)

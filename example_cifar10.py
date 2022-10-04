@@ -78,7 +78,7 @@ if __name__ == '__main__':
     ax.set_title('Surface and Contour Plot of Loss Landscape')
     
     # save plot to file and show
-    plt.savefig('loss_cifar10_2d_plot.png')
+    plt.savefig('cifar10_results/loss_cifar10_2d_plot.png')
     plt.show()
 
     # compute loss landscape 3D data
@@ -114,8 +114,8 @@ if __name__ == '__main__':
     ax.set_xlabel('X', fontdict={'size': 15, 'color': 'black'})
 
     # save plot to file and show
-    plt.savefig('loss_cifar10_3d.png')
+    plt.savefig('cifar10_results/loss_cifar10_3d.png')
     plt.show()
     
-    save('loss_data_fin_cifar10.npy', loss_data_fin)
-    save('loss_data_fin_3d_cifar10.npy', loss_data_fin_3d)
+    save('cifar10_results/loss_data_fin_cifar10.npy', loss_data_fin)
+    save('cifar10_results/loss_data_fin_3d_cifar10.npy', loss_data_fin_3d)

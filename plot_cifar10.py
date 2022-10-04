@@ -8,10 +8,10 @@ import matplotlib.animation as animation
 STEPS = 40
 
 # load array
-loss_data_fin = load('loss_data_fin_cifar10.npy')
-loss_data_fin_3d = load('loss_data_fin_3d_cifar10.npy')
-loss_data_fin_c = load('loss_data_fin_cifar10c.npy')
-loss_data_fin_3d_c = load('loss_data_fin_3d_cifar10c.npy')
+loss_data_fin = load('cifar10_results/loss_data_fin_cifar10.npy')
+loss_data_fin_3d = load('cifar10_results/loss_data_fin_3d_cifar10.npy')
+loss_data_fin_c = load('cifar10c_results/loss_data_fin_cifar10c.npy')
+loss_data_fin_3d_c = load('cifar10c_results/loss_data_fin_3d_cifar10c.npy')
 
 # print the array
 print(loss_data_fin.shape)
@@ -45,7 +45,7 @@ for i in range(STEPS):
 plt.bar(range(len(num_list)), num_list)
 #plt.yticks(np.arange(2.0, 2.5, step=0.01))
 #plt.ylim(ymin=2.0, ymax=2.5)
-plt.savefig('loss_cifar10_3d_values.png')
+plt.savefig('cifar10_results/loss_cifar10_3d_values.png')
 plt.show()
 
 # plot loss values of 3d loss landscape of cifar10c
@@ -57,7 +57,7 @@ for i in range(STEPS):
 plt.bar(range(len(num_list_c)), num_list_c)
 #plt.yticks(np.arange(2.0, 2.5, step=0.01))
 #plt.ylim(ymin=2.0, ymax=2.5)
-plt.savefig('loss_cifar10c_3d_values.png')
+plt.savefig('cifar10c_results/loss_cifar10c_3d_values.png')
 plt.show()
 
 # plot loss values of 2d loss landscape of cifar10
@@ -68,7 +68,7 @@ for i in range(STEPS):
 plt.bar(range(len(num_list_2d)), num_list_2d)
 #plt.yticks(np.arange(2.0, 2.5, step=0.01))
 #plt.ylim(ymin=2.0, ymax=2.5)
-plt.savefig('loss_cifar10_2d_values.png')
+plt.savefig('cifar10_results/loss_cifar10_2d_values.png')
 plt.show()
 
 # plot loss values of 2d loss landscape of cifar10c
@@ -79,5 +79,5 @@ for i in range(STEPS):
 plt.bar(range(len(num_list_2d_c)), num_list_2d_c)
 #plt.yticks(np.arange(2.0, 2.5, step=0.01))
 #plt.ylim(ymin=2.0, ymax=2.5)
-plt.savefig('loss_cifar10c_2d_values.png')
+plt.savefig('cifar10c_results/loss_cifar10c_2d_values.png')
 plt.show()

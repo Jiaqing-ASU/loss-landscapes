@@ -4,10 +4,10 @@ import numpy as np
 STEPS = 40
 
 # load array
-X = load('X.npy')
-Y = load('Y.npy')
-Z = load('Z.npy')
-loss_data_fin_3d = load('loss_data_fin_3d.npy')
+X = load('mnist_results/X.npy')
+Y = load('mnist_results/Y.npy')
+Z = load('mnist_results/Z.npy')
+loss_data_fin_3d = load('mnist_results/loss_data_fin_3d_mnist.npy')
 loss_list = []
 
 for i in range(0, STEPS):
@@ -33,7 +33,7 @@ for i in range(0, STEPS*STEPS*STEPS):
     point.append(loss[i])
     point_list.append(point)
 
-np.savetxt("points.csv", point_list, delimiter=",")
+np.savetxt("points/points.csv", point_list, delimiter=",")
 
 point_raw = []
 
@@ -43,4 +43,4 @@ for i in range(0, STEPS*STEPS*STEPS):
     point_raw.append(Z[i])
     point_raw.append(loss[i])
 
-np.array(point_raw,np.float64).tofile("points.raw")
+np.array(point_raw,np.float64).tofile("points/points.raw")
