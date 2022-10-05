@@ -43,4 +43,10 @@ for i in range(0, STEPS*STEPS*STEPS):
     point_raw.append(Z[i])
     point_raw.append(loss[i])
 
-np.array(point_raw,np.float64).tofile("points/points.raw")
+np.array(point_raw,np.float32).tofile("points/points.raw")
+
+test_array = np.arange(100).reshape(5,20).astype(np.float)
+print(test_array)
+
+np.savetxt("points/points_test.csv", test_array, delimiter=",")
+np.array(test_array,np.float32).tofile("points/points_test.raw")

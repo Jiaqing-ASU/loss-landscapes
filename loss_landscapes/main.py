@@ -9,7 +9,7 @@ import numpy as np
 from loss_landscapes.model_interface.model_wrapper import ModelWrapper, wrap_model
 from loss_landscapes.model_interface.model_parameters import orthogonal_to_plane, rand_u_like, orthogonal_to
 from loss_landscapes.metrics.metric import Metric
-
+from loss_landscapes.model_interface.model_parameters import ModelParameters
 
 # noinspection DuplicatedCode
 def point(model: typing.Union[torch.nn.Module, ModelWrapper], metric: Metric) -> tuple:
@@ -321,7 +321,7 @@ def random_plane(model: typing.Union[torch.nn.Module, ModelWrapper], metric: Met
         data_matrix.append(data_column)
         start_point.add_(dir_one)
 
-    return np.array(data_matrix)
+    return np.array(data_matrix), dir_one, dir_two
 
 # noinspection DuplicatedCode
 def random_space(model: typing.Union[torch.nn.Module, ModelWrapper], metric: Metric, distance=1, steps=20,
@@ -383,29 +383,89 @@ def random_space(model: typing.Union[torch.nn.Module, ModelWrapper], metric: Met
         data_matrix.append(data_first_dim)
         start_point.add_(dir_one)
         
-    return np.array(data_matrix)
+    return np.array(data_matrix), dir_one, dir_two, dir_three
 
-"""
+def random_plane_given_plane(model: typing.Union[torch.nn.Module, ModelWrapper], metric: Metric, dir_one: ModelParameters, dir_two: ModelParameters, distance=1, steps=20,
+                 normalization='filter', deepcopy_model=False) -> np.ndarray:
+    
+    model_start_wrapper = wrap_model(copy.deepcopy(model) if deepcopy_model else model)
+
+    start_point = model_start_wrapper.get_module_parameters()
+
+    # scale to match steps and total distance
+    dir_one.mul_(((start_point.model_norm() * distance) / steps) / dir_one.model_norm())
+    dir_two.mul_(((start_point.model_norm() * distance) / steps) / dir_two.model_norm())
+    # Move start point so that original start params will be in the center of the plot
+    dir_one.mul_(steps / 2)
+    dir_two.mul_(steps / 2)
+    start_point.sub_(dir_one)
+    start_point.sub_(dir_two)
+    dir_one.truediv_(steps / 2)
+    dir_two.truediv_(steps / 2)
+
+    data_matrix = []
+    # evaluate loss in grid of (steps * steps) points, where each column signifies one step
+    # along dir_one and each row signifies one step along dir_two. The implementation is again
+    # a little convoluted to avoid constructive operations. Fundamentally we generate the matrix
+    # [[start_point + (dir_one * i) + (dir_two * j) for j in range(steps)] for i in range(steps].
     for i in range(steps):
-        data_first_dim= []
+        data_column = []
 
         for j in range(steps):
-            data_second_dim = []
+            # for every other column, reverse the order in which the column is generated
+            # so you can easily use in-place operations to move along dir_two
+            if i % 2 == 0:
+                start_point.add_(dir_two)
+                data_column.append(metric(model_start_wrapper))
+            else:
+                start_point.sub_(dir_two)
+                data_column.insert(0, metric(model_start_wrapper))
 
+        data_matrix.append(data_column)
+        start_point.add_(dir_one)
+
+    return np.array(data_matrix)
+
+# noinspection DuplicatedCode
+def random_space_given_space(model: typing.Union[torch.nn.Module, ModelWrapper], metric: Metric, dir_one: ModelParameters, dir_two: ModelParameters, dir_three: ModelParameters, distance=1, steps=20,
+                 normalization='filter', deepcopy_model=False) -> np.ndarray:
+    model_start_wrapper = wrap_model(copy.deepcopy(model) if deepcopy_model else model)
+
+    start_point = model_start_wrapper.get_module_parameters()
+
+    # scale to match steps and total distance
+    dir_one.mul_(((start_point.model_norm() * distance) / steps) / dir_one.model_norm())
+    dir_two.mul_(((start_point.model_norm() * distance) / steps) / dir_two.model_norm())
+    dir_three.mul_(((start_point.model_norm() * distance) / steps) / dir_three.model_norm())
+    # Move start point so that original start params will be in the center of the plot
+    dir_one.mul_(steps / 2)
+    dir_two.mul_(steps / 2)
+    dir_three.mul_(steps / 2)
+    start_point.sub_(dir_one)
+    start_point.sub_(dir_two)
+    start_point.sub_(dir_three)
+    dir_one.truediv_(steps / 2)
+    dir_two.truediv_(steps / 2)
+    dir_three.truediv_(steps / 2)
+
+    data_matrix = []
+
+    for i in range(steps):
+        data_first_dim = []
+        for j in range(steps):
+            data_second_dim = []
             for k in range(steps):
-                # for every other column, reverse the order in which the column is generated
-                # so you can easily use in-place operations to move along dir_two
-                if i % 2 == 0:
-                    start_point.add_(dir_three)
-                    data_second_dim.append(metric(model_start_wrapper))
-                else:
-                    start_point.sub_(dir_three)
-                    data_second_dim.insert(0, metric(model_start_wrapper))
-            
+                start_point.add_(dir_three)
+                data_second_dim.append(metric(model_start_wrapper))
+            for k in range(steps):
+                start_point.sub_(dir_three)
             data_first_dim.append(data_second_dim)
             start_point.add_(dir_two)
-        
-        data_matrix.append(data_second_dim)
+        for j in range(steps):
+            start_point.sub_(dir_two)
+        data_matrix.append(data_first_dim)
         start_point.add_(dir_one)
-"""
+        
+    return np.array(data_matrix)
+
 # todo add hypersphere functionality
