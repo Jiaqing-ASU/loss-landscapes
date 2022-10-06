@@ -5,6 +5,8 @@
 This part of the code has been edited and modified from the original [loss-landscapes](https://github.com/marcellodebernardi/loss-landscapes), so you need to manually install the Python package to successfully run the tests in this project.
 
 ```shell
+python3 -m pip install --upgrade pip
+python3 -m pip install --upgrade build
 python3 -m build
 cd dist
 pip install <tar.gz file>
