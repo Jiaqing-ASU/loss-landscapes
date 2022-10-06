@@ -7,6 +7,7 @@ This part of the code has been edited and modified from the original [loss-lands
 ```shell
 python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade build
+apt install python3.8-venv
 python3 -m build
 cd dist
 pip install <tar.gz file>

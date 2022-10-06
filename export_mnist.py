@@ -8,6 +8,7 @@ X = load('mnist_results/X.npy')
 Y = load('mnist_results/Y.npy')
 Z = load('mnist_results/Z.npy')
 loss_data_fin_3d = load('mnist_results/loss_data_fin_3d_mnist.npy')
+loss_data_fin = load('mnist_results/loss_data_fin_mnist.npy')
 loss_list = []
 
 for i in range(0, STEPS):
@@ -50,3 +51,9 @@ print(test_array)
 
 np.savetxt("points/points_test.csv", test_array, delimiter=",")
 np.array(test_array,np.float32).tofile("points/points_test.raw")
+
+# export the loss values for 3d
+np.array(loss_data_fin_3d,np.float32).tofile("points/points_loss_3d.raw")
+
+# export the loss values for 2d
+np.array(loss_data_fin,np.float32).tofile("points/points_loss_2d.raw")
