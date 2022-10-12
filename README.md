@@ -15,18 +15,20 @@ pip install <tar.gz file>
 
 ## Running Instructions
 
-In order to compare the different effects of different corruption inputs, we divide the training and visualization of the model into two parts. First, we train the model and save it in the current folder.
+In order to compare the different effects of different corruption inputs with different models, we divide the training and visualization of the model into two parts. First, we train the model and save it in the corresponding folder.
 
 ```shell
-python3 train_mnist.py
+python3 train_mnist.py --dataset=<training input dataset>
 ```
 
-Then we can see the `model_initial.pt` and `model_final.pt` have been generated under the current folder.
+Then we can see the `model_initial.pt` and `model_final.pt` have been generated under the corresponding folder which should be under `mnist_model` folder.
 
 To do the visualization, run the following code:
 
 ```shell
-python3 plot_mnist.py --dataset=<corruption dataset>
+python3 plot_mnist.py --model=<trained model> --dataset=<corruption dataset>
 ```
+
+The trained options are `original`, `brightness`, `canny_edges`, `dotted_line`, `fog`, `glass_blur`, `identity`, `impulse_noise`, `motion_blur`, `rotate`, `scale`, `shear`, `shot_noise`, `spatter`, `stripe`, `translate`, `zigzag`. The default setting is `original`.
 
 The corruption dataset options are `brightness`, `canny_edges`, `dotted_line`, `fog`, `glass_blur`, `identity`, `impulse_noise`, `motion_blur`, `rotate`, `scale`, `shear`, `shot_noise`, `spatter`, `stripe`, `translate`, `zigzag`. The default setting is `brightness`.

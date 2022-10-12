@@ -1,23 +1,29 @@
 # libraries
 import copy
 import matplotlib
-import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
 import numpy as np
+from numpy import load
 import torch
 import torch.nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torchvision.datasets as datasets
 from tqdm import tqdm
-from mpl_toolkits.mplot3d import Axes3D
-from numpy import save
+import argparse
 
 matplotlib.rcParams['figure.figsize'] = [18, 12]
 
 # code from this library - import the lines module
 import loss_landscapes
 import loss_landscapes.metrics
+
+parser = argparse.ArgumentParser()
+# input corruption dataset:
+# original, brightness, canny_edges, dotted_line, fog, glass_blur, identity
+# impulse_noise, motion_blur, rotate, scale, shear, shot_noise
+# spatter, stripe, translate, zigzag
+parser.add_argument('--dataset', default='original', help='training dataset')             
+args = parser.parse_args()
 
 # training hyperparameters
 IN_DIM = 28 * 28
@@ -60,10 +66,139 @@ def train(model, optimizer, criterion, train_loader, epochs):
 
     model.eval()
 
-# download MNIST and setup data loaders
-mnist_train = datasets.MNIST(root='mnist_data', train=True, download=True, transform=Flatten())
-train_loader = torch.utils.data.DataLoader(mnist_train, batch_size=BATCH_SIZE, shuffle=False)
+if args.dataset == 'original':
+    mnist_train = datasets.MNIST(root='mnist_data', train=True, download=True, transform=Flatten())
+elif args.dataset == 'brightness':
+    x_c = load('mnist_c/brightness/train_images.npy')
+    y_c = load('mnist_c/brightness/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'canny_edges':
+    x_c = load('mnist_c/canny_edges/train_images.npy')
+    y_c = load('mnist_c/canny_edges/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'dotted_line':
+    x_c = load('mnist_c/dotted_line/train_images.npy')
+    y_c = load('mnist_c/dotted_line/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'fog':
+    x_c = load('mnist_c/fog/train_images.npy')
+    y_c = load('mnist_c/fog/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'glass_blur':
+    x_c = load('mnist_c/glass_blur/train_images.npy')
+    y_c = load('mnist_c/glass_blur/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'identity':
+    x_c = load('mnist_c/identity/train_images.npy')
+    y_c = load('mnist_c/identity/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'impulse_noise':
+    x_c = load('mnist_c/impulse_noise/train_images.npy')
+    y_c = load('mnist_c/impulse_noise/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'motion_blur':
+    x_c = load('mnist_c/motion_blur/train_images.npy')
+    y_c = load('mnist_c/motion_blur/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'rotate':
+    x_c = load('mnist_c/rotate/train_images.npy')
+    y_c = load('mnist_c/rotate/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'scale':
+    x_c = load('mnist_c/scale/train_images.npy')
+    y_c = load('mnist_c/scale/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'shear':
+    x_c = load('mnist_c/shear/train_images.npy')
+    y_c = load('mnist_c/shear/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'shot_noise':
+    x_c = load('mnist_c/shot_noise/train_images.npy')
+    y_c = load('mnist_c/shot_noise/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'spatter':
+    x_c = load('mnist_c/spatter/train_images.npy')
+    y_c = load('mnist_c/spatter/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'stripe':
+    x_c = load('mnist_c/stripe/train_images.npy')
+    y_c = load('mnist_c/stripe/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'translate':
+    x_c = load('mnist_c/translate/train_images.npy')
+    y_c = load('mnist_c/translate/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
+elif args.dataset == 'zigzag':
+    x_c = load('mnist_c/zigzag/train_images.npy')
+    y_c = load('mnist_c/zigzag/train_labels.npy')
+    x_c = torch.from_numpy(x_c.reshape(60000,784)).float()
+    y_c = torch.from_numpy(y_c.reshape(60000)).long()
+    mnist_train = []
+    for i in range(len(x_c)):
+        mnist_train.append([x_c[i], y_c[i]])
 
+# define training data loader
+train_loader = torch.utils.data.DataLoader(mnist_train, batch_size=BATCH_SIZE, shuffle=False)
 # define model
 model = MLPSmall(IN_DIM, OUT_DIM)
 optimizer = optim.Adam(model.parameters(), lr=LR)
@@ -76,5 +211,6 @@ model_initial = copy.deepcopy(model)
 train(model, optimizer, criterion, train_loader, EPOCHS)
 model_final = copy.deepcopy(model)
 
-torch.save(model_initial.state_dict(), 'model_initial.pt')
-torch.save(model_final.state_dict(), 'model_final.pt')
+path = 'mnist_model' + '/' + args.dataset + '/'
+torch.save(model_initial.state_dict(), path + 'model_initial.pt')
+torch.save(model_final.state_dict(), path + 'model_final.pt')
